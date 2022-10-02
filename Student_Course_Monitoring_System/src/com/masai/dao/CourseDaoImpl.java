@@ -118,4 +118,30 @@ public class CourseDaoImpl implements CourseDao {
 		return list_of_courses;
 	}
 
+	@Override
+	public String updateCourse(int course_id, int fees) {
+		String result = "Course_ID  Does Not Exist! ";
+
+		try (Connection connection = DatabaseUtility.provideConnection()) {
+
+			PreparedStatement statement = connection
+					.prepareStatement("UPDATE COURSE SET course_fee=? WHERE course_id=?");
+
+			statement.setInt(1, fees);
+			statement.setInt(2, course_id);
+
+			int response = statement.executeUpdate();
+
+			if (response > 0) {
+				result = "Course Fees Updated Successfully !";
+			}
+
+		} catch (SQLException e) {
+
+			result = e.getMessage();
+		}
+
+		return result;
+	}
+
 }

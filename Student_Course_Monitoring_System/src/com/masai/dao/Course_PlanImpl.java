@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.masai.bean.Course_Plan;
 import com.masai.bean.Faculty;
+import com.masai.bean.Report;
 import com.masai.exceptions.Course_PlanException;
 import com.masai.exceptions.FacultyException;
 import com.masai.utility.DatabaseUtility;
@@ -22,13 +23,11 @@ public class Course_PlanImpl implements Course_Plan_Dao {
 
 		try (Connection connection = DatabaseUtility.provideConnection()) {
 
-			PreparedStatement statement = connection.prepareStatement(
-					" INSERT INTO course_plan(plan_id,batch_id) VALUES(?,?)");
+			PreparedStatement statement = connection
+					.prepareStatement(" INSERT INTO course_plan(plan_id,batch_id) VALUES(?,?)");
 
 			statement.setString(1, course_plan.getPlan_id().toUpperCase());
 			statement.setString(2, course_plan.getBatch_id().toUpperCase());
-		
-			
 
 			int response = statement.executeUpdate();
 
@@ -45,12 +44,13 @@ public class Course_PlanImpl implements Course_Plan_Dao {
 	}
 
 	@Override
-	public String deleteCoursePlan(String Plan_id,String Batch_id) {
+	public String deleteCoursePlan(String Plan_id, String Batch_id) {
 		String result = "Plan_Id Does Not Exist! ";
 
 		try (Connection connection = DatabaseUtility.provideConnection()) {
 
-			PreparedStatement statement = connection.prepareStatement("DELETE FROM course_plan WHERE plan_id = ? AND batch_id = ?");
+			PreparedStatement statement = connection
+					.prepareStatement("DELETE FROM course_plan WHERE plan_id = ? AND batch_id = ?");
 
 			statement.setString(1, Plan_id);
 			statement.setString(2, Batch_id);
@@ -74,7 +74,8 @@ public class Course_PlanImpl implements Course_Plan_Dao {
 
 		try (Connection connection = DatabaseUtility.provideConnection()) {
 
-			PreparedStatement statement = connection.prepareStatement("select * from course_plan  order by batch_id,day ");
+			PreparedStatement statement = connection
+					.prepareStatement("select * from course_plan  order by batch_id,day ");
 
 			ResultSet result = statement.executeQuery();
 
@@ -84,17 +85,129 @@ public class Course_PlanImpl implements Course_Plan_Dao {
 
 				String batch_id = result.getString("batch_id");
 
+				int faculty_id = result.getInt("faculty_id");
+
 				Date day = result.getDate("day");
 
 				String topic = result.getString("topic");
 
 				boolean status = result.getBoolean("status");
 
-				
-
-				Course_Plan Course_Plan =new Course_Plan(plan_id, batch_id, day, topic, status);
+				Course_Plan Course_Plan = new Course_Plan(plan_id, batch_id, faculty_id, day, topic, status);
 
 				list_of_CoursePlan.add(Course_Plan);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new Course_PlanException(e.getMessage());
+		}
+
+		if (list_of_CoursePlan.size() == 0) {
+			System.out.println("No Course_Plan Found in the DataBase");
+		}
+
+		return list_of_CoursePlan;
+	}
+
+	@Override
+	public String updateCoursePlan(String Plan_id, String Batch_id) {
+
+		String result = "Plan ID  Does Not Exist! ";
+
+		try (Connection connection = DatabaseUtility.provideConnection()) {
+
+			PreparedStatement statement = connection
+					.prepareStatement("UPDATE course_plan SET batch_id=? WHERE plan_id=?");
+
+			statement.setString(1, Batch_id);
+			statement.setString(2, Plan_id);
+
+			int response = statement.executeUpdate();
+
+			if (response > 0) {
+				result = "Batch ID Updated Successfully !";
+			}
+
+		} catch (SQLException e) {
+
+			result = e.getMessage();
+		}
+
+		return result;
+
+	}
+
+	@Override
+	public List<Course_Plan> viewDayWiseUpdate() throws Course_PlanException {
+		List<Course_Plan> list_of_CoursePlan = new ArrayList<Course_Plan>();
+
+		try (Connection connection = DatabaseUtility.provideConnection()) {
+
+			PreparedStatement statement = connection
+					.prepareStatement("select * from course_plan  order by batch_id,day ");
+
+			ResultSet result = statement.executeQuery();
+
+			while (result.next()) {
+
+				String plan_id = result.getString("plan_id");
+
+				String batch_id = result.getString("batch_id");
+
+				int faculty_id = result.getInt("faculty_id");
+
+				Date day = result.getDate("day");
+
+				String topic = result.getString("topic");
+
+				boolean status = result.getBoolean("status");
+
+				Course_Plan Course_Plan = new Course_Plan(plan_id, batch_id, faculty_id, day, topic, status);
+
+				list_of_CoursePlan.add(Course_Plan);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new Course_PlanException(e.getMessage());
+		}
+
+		if (list_of_CoursePlan.size() == 0) {
+			System.out.println("No Course_Plan Found in the DataBase");
+		}
+
+		return list_of_CoursePlan;
+	}
+
+	@Override
+	public List<Report> generateReport() throws Course_PlanException {
+		List<Report> list_of_CoursePlan = new ArrayList<Report>();
+
+		try (Connection connection = DatabaseUtility.provideConnection()) {
+
+			PreparedStatement statement = connection.prepareStatement(
+					" SELECT p.plan_id , p.batch_id , p.faculty_id ,p.day,p.status FROM course_plan p;");
+
+			ResultSet result = statement.executeQuery();
+
+			while (result.next()) {
+
+				String plan_id = result.getString("plan_id");
+
+				String batch_id = result.getString("batch_id");
+
+				int faculty_id = result.getInt("faculty_id");
+
+				Date day = result.getDate("day");
+
+				boolean status = result.getBoolean("status");
+
+				
+				
+				Report report = new Report(plan_id, batch_id, faculty_id, day, status);
+
+				list_of_CoursePlan.add(report);
 			}
 
 		} catch (SQLException e) {

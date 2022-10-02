@@ -17,10 +17,11 @@ import com.masai.exceptions.FacultyException;
 public interface FacultyDao {
 
 	public String createFaculty(Faculty faculty);
-	
+
+	public String updateFaculty(int faculty_id, String faculty_name);
+
 	public String deleteFaculty(int faculty_id);
-	
+
 	public List<Faculty> viewFaculty() throws FacultyException;
-	
-	
+
 }

@@ -132,4 +132,30 @@ public class FacultyDaoImpl implements FacultyDao {
 
 	}
 
+	@Override
+	public String updateFaculty(int faculty_id, String faculty_name) {
+		String result = "Faculty_ID  Does Not Exist! ";
+
+		try (Connection connection = DatabaseUtility.provideConnection()) {
+
+			PreparedStatement statement = connection
+					.prepareStatement("UPDATE faculty SET faculty_name=? WHERE faculty_id=?");
+
+			statement.setString(1, faculty_name);
+			statement.setInt(2, faculty_id);
+
+			int response = statement.executeUpdate();
+
+			if (response > 0) {
+				result = "Faculty Name Updated Successfully !";
+			}
+
+		} catch (SQLException e) {
+
+			result = e.getMessage();
+		}
+
+		return result;
+	}
+
 }

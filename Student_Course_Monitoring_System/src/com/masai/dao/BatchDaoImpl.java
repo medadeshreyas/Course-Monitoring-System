@@ -57,7 +57,7 @@ public class BatchDaoImpl implements BatchDao {
 
 		try (Connection connection = DatabaseUtility.provideConnection()) {
 
-			PreparedStatement statement = connection.prepareStatement("DELETE FROM FACULTY WHERE batch_id = ?");
+			PreparedStatement statement = connection.prepareStatement("DELETE FROM BATCH WHERE batch_id = ?");
 
 			statement.setString(1, new_batch_id);
 
@@ -81,7 +81,7 @@ public class BatchDaoImpl implements BatchDao {
 
 		try (Connection connection = DatabaseUtility.provideConnection()) {
 
-			PreparedStatement statement = connection.prepareStatement("SELECT * FROM Batchg");
+			PreparedStatement statement = connection.prepareStatement("SELECT * FROM Batch");
 
 			ResultSet result = statement.executeQuery();
 
@@ -99,9 +99,7 @@ public class BatchDaoImpl implements BatchDao {
 
 				String duration = result.getString("duration");
 
-				
-
-				Batch batch = new Batch(batch_id, course_id, faculty_id, no_of_students,batch_Start_Date, duration);
+				Batch batch = new Batch(batch_id, course_id, faculty_id, no_of_students, batch_Start_Date, duration);
 
 				list_of_batch.add(batch);
 			}
@@ -116,6 +114,34 @@ public class BatchDaoImpl implements BatchDao {
 		}
 
 		return list_of_batch;
+	}
+
+	@Override
+	public String updateBatch(String batch_id, int no_of_students) {
+		String result = "Batch_ID  Does Not Exist! ";
+
+		String new_batch_id = batch_id.toUpperCase();
+
+		try (Connection connection = DatabaseUtility.provideConnection()) {
+
+			PreparedStatement statement = connection
+					.prepareStatement("UPDATE BATCH SET no_of_students=? WHERE batch_id=?;");
+
+			statement.setInt(1, no_of_students);
+			statement.setString(2, batch_id);
+
+			int response = statement.executeUpdate();
+
+			if (response > 0) {
+				result = "Batch Updated Successfully !";
+			}
+
+		} catch (SQLException e) {
+
+			result = e.getMessage();
+		}
+
+		return result;
 	}
 
 }
