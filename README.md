@@ -35,11 +35,7 @@ After the day wise schedule has updated the faculty Administrator can check the 
 This helps the Admin to be aware of the ongoing batches and their course plans.
 
 
-The platform allows a passenger to browse through the bus schedule and make a reservation, as well as the Administrator to add buses, routes, view and confirm customer reservations.
 
-When a person books or reserves a ticket, the reservation goes to Administrator for confirmation and the status is set as "Waiting" for the particular reservation. 
-
-Once the Administrator verifies and confirms the reservation, the status changes from "Pending / Waiting" to "Confirmed". 
 
 - Administrator
     -
@@ -75,17 +71,17 @@ https://dev.mysql.com/downloads/mysql/
 Clone the Project
 
 ```bash
-git clone https://github.com/TejasMedade/taboo-lock-5540
+git clone https://github.com/medadeshreyas/average-collar-3069
 ```
 
 Open MySQL Server
 ```bash
-Create a New Database in SQL: Bus_Reservation_System 
+Create a New Database in SQL: Course_Monitoring_System 
 ```
 Go to the Project Directory & Open SQL Folder > SQL Tables
 
 ```bash
-Create The Same Tables in Your Bus_Reservation_System Database 
+Create The Same Tables in Your Course_Monitoring_System Database 
 ```
 
 Create a Admin For Your Database
